@@ -1,15 +1,17 @@
 from pydantic import BaseModel
-
-class CartItemBase(BaseModel):
-    cart_id: int
+from app.schemas.product import ProductRead
+class CartItem(BaseModel):
     product_id: int
     quantity: int
 
-class CartItemCreate(CartItemBase):
+class CartItemCreate(CartItem):
     pass
 
-class CartItemRead(CartItemBase):
-    id: int
 
-    class Config:
-        orm_mode = True
+
+class CartItemRead(BaseModel):
+    id: int
+    product: ProductRead
+    quantity: int
+
+    model_config = {"from_attributes": True}

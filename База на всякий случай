@@ -1,0 +1,142 @@
+[
+  {
+    "name": "Air Max 90",
+    "brand": "Nike",
+    "price": 139.99,
+    "image_url": "https://example.com/airmax90.jpg",
+    "size": "42"
+  },
+  {
+    "name": "Ultraboost Light",
+    "brand": "Adidas",
+    "price": 179.99,
+    "image_url": "https://example.com/ultraboostlight.jpg",
+    "size": "43"
+  },
+  {
+    "name": "Gel-Kayano 30",
+    "brand": "Asics",
+    "price": 159.99,
+    "image_url": "https://example.com/gelkayano30.jpg",
+    "size": "44"
+  },
+  {
+    "name": "RS-X Triple",
+    "brand": "Puma",
+    "price": 119.99,
+    "image_url": "https://example.com/rsxtriple.jpg",
+    "size": "42.5"
+  },
+  {
+    "name": "Chuck 70 High",
+    "brand": "Converse",
+    "price": 89.99,
+    "image_url": "https://example.com/chuck70.jpg",
+    "size": "41"
+  },
+  {
+    "name": "Old Skool Classic",
+    "brand": "Vans",
+    "price": 74.99,
+    "image_url": "https://example.com/oldskool.jpg",
+    "size": "44.5"
+  },
+  {
+    "name": "Club C 85",
+    "brand": "Reebok",
+    "price": 84.99,
+    "image_url": "https://example.com/clubc85.jpg",
+    "size": "43"
+  },
+  {
+    "name": "Air Jordan 1 Mid",
+    "brand": "Jordan",
+    "price": 139.99,
+    "image_url": "https://example.com/aj1mid.jpg",
+    "size": "42"
+  },
+  {
+    "name": "ZoomX Vaporfly",
+    "brand": "Nike",
+    "price": 249.99,
+    "image_url": "https://example.com/vaporfly.jpg",
+    "size": "45"
+  },
+  {
+    "name": "Yeezy Boost 350 V2",
+    "brand": "Adidas",
+    "price": 219.99,
+    "image_url": "https://example.com/yeezy350.jpg",
+    "size": "44"
+  },
+  {
+    "name": "FuelCell Rebel v3",
+    "brand": "New Balance",
+    "price": 129.99,
+    "image_url": "https://example.com/fuelcell.jpg",
+    "size": "43.5"
+  },
+  {
+    "name": "Wave Rider 27",
+    "brand": "Mizuno",
+    "price": 139.99,
+    "image_url": "https://example.com/waverider.jpg",
+    "size": "42"
+  },
+  {
+    "name": "Cloudswift 3",
+    "brand": "On Running",
+    "price": 159.99,
+    "image_url": "https://example.com/cloudswift.jpg",
+    "size": "41.5"
+  },
+  {
+    "name": "XT-6",
+    "brand": "Salomon",
+    "price": 169.99,
+    "image_url": "https://example.com/xt6.jpg",
+    "size": "44"
+  },
+  {
+    "name": "Classic Leather Legacy",
+    "brand": "Reebok",
+    "price": 94.99,
+    "image_url": "https://example.com/legacy.jpg",
+    "size": "43"
+  },
+  {
+    "name": "Forum Low",
+    "brand": "Adidas",
+    "price": 99.99,
+    "image_url": "https://example.com/forumlow.jpg",
+    "size": "42"
+  },
+  {
+    "name": "Blazer Mid '77",
+    "brand": "Nike",
+    "price": 109.99,
+    "image_url": "https://example.com/blazer.jpg",
+    "size": "43.5"
+  },
+  {
+    "name": "Sk8-Hi",
+    "brand": "Vans",
+    "price": 84.99,
+    "image_url": "https://example.com/sk8hi.jpg",
+    "size": "44.5"
+  },
+  {
+    "name": "All Star Lift",
+    "brand": "Converse",
+    "price": 94.99,
+    "image_url": "https://example.com/lift.jpg",
+    "size": "41"
+  },
+  {
+    "name": "Zoom Freak 5",
+    "brand": "Nike",
+    "price": 129.99,
+    "image_url": "https://example.com/freak5.jpg",
+    "size": "45"
+  }
+]

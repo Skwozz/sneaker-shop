@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from app.models.product import Product
 from app.schemas.product import ProductCreate
@@ -21,6 +22,15 @@ async def create_product(session: AsyncSession,
     await session.refresh(db_product)
     return db_product
 
+async def delete_product(session: AsyncSession, product_id: int):
+    result = await session.execute(select(Product).where(Product.id==product_id))
+    product = result.scalars().first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product Item not found")
+    else:
+        await session.delete(product)
+        await session.commit()
+        return True
 
 
 

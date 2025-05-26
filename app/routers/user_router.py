@@ -5,7 +5,7 @@ from app.db.base import get_session
 from app.schemas import user
 from app.models.user import User
 from app.crud import user_crud
-from app.routers.auth import get_current_user
+from app.routers.auth_router import get_current_user
 router = APIRouter(prefix='/user',tags=['user'])
 
 @router.post("/register/", response_model=user.UserRead)

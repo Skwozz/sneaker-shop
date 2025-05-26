@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from starlette import status
+
 from app.db.base import get_session
 from app.schemas.product import ProductCreate, ProductRead
 from app.crud import product_crud
@@ -20,3 +22,13 @@ async def get_products(
         session: AsyncSession = Depends(get_session)
 ):
     return await product_crud.get_product(session,)
+
+@router.delete('/delete/{id}', status_code= status.HTTP_204_NO_CONTENT)
+async def delete_product(
+        id: int,
+        session: AsyncSession = Depends(get_session)
+):
+    delete_result = await product_crud.delete_product(session, id)
+    if not delete_result:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return  delete_result
