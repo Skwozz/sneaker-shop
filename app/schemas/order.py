@@ -10,5 +10,5 @@ class OrderBase(BaseModel):
     created_at: datetime
     order_items: list[OrderItemRead]
 
-
     model_config = {"from_attributes": True}
+

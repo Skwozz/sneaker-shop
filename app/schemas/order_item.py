@@ -3,17 +3,10 @@ from pydantic import BaseModel
 from app.schemas.product import ProductRead
 
 
-class OrderItemBase(BaseModel):
-    order_id: int
-    quantity: int
-    product: ProductRead
-    price: float
-
-class OrderItemCreate(OrderItemBase):
-    pass
-
-class OrderItemRead(OrderItemBase):
+class OrderItemRead(BaseModel):
     id: int
+    quantity: int
+    price: float
+    product: ProductRead
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
