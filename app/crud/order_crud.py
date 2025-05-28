@@ -14,9 +14,10 @@ from app.models.cart_item import CartItem
 async def get_order(session: AsyncSession, user_id: int):
     result = await session.execute(
         select(Order).options(selectinload(Order.order_items).selectinload(OrderItem.product))
-        .where(Order.user_id == user_id)
+        .where(Order.user_id == user_id,
+               Order.is_deleted == False)
     )
-    return result.scalar_one()
+    return result.scalars().all()
 
 async def create_order_from_cart(session: AsyncSession, user_id):
     result = await session.execute(select(CartItem)
@@ -52,3 +53,14 @@ async def create_order_from_cart(session: AsyncSession, user_id):
         .where(Order.id == new_order.id)
     )
     return result.scalar_one()
+
+async def soft_delete_order(session: AsyncSession, user_id: int, order_id: int):
+    result = await session.execute(select(Order)
+                                   .where(Order.id == order_id,
+                                          Order.user_id == user_id))
+    order_del = result.scalars().first()
+    if not order_del:
+        return False
+    order_del.is_deleted = True
+    await session.commit()
+    return True
