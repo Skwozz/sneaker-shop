@@ -42,3 +42,4 @@ vine
 watchfiles
 websockets
 reportlab
+jinja2

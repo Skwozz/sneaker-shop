@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SneakerShop</title>
+</head>
+<body>
+    <h1>👟 Добро пожаловать в SneakerShop!</h1>
+    <p>Это первая HTML-страница, подключённая к FastAPI</p>
+</body>
+<h2>🛍 Каталог кроссовок:</h2>
+    <ul>
+      {% for product in products %}
+        <li>
+  <img src="{{ product.image_url }}" alt="{{ product.name }}" width="150"><br>
+  <strong>{{ product.name }}</strong> — {{ product.price }}₽<br>
+  {{ product.brand }} (Размер: {{ product.size }})
+</li>
+
+      {% endfor %}
+    </ul>
+
+</html>
