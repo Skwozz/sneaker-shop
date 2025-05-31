@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Корзина</title>
+</head>
+<body>
+  <h1>🛒 Ваша корзина</h1>
+  <ul>
+    {% for item in items %}
+      <li>{{ item.product.name }} — {{ item.product.price }} — {{ item.quantity }} ₽</li>
+    {% endfor %}
+  </ul>
+  <a href="/home">⬅️ Назад в каталог</a>
+</body>
+</html>

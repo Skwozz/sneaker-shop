@@ -47,24 +47,28 @@ async def login_with_access_token(
     access_token = crreate_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
 
-async def get_current_user(
-    token: str = Depends(oauth2_scheme),
-    session: AsyncSession = Depends(get_session)):
+from fastapi import Request
 
-    credentials_exception = HTTPException(
-        status.HTTP_401_UNAUTHORIZED,
-        detail='Ошибка в пароде или логине',
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+async def get_current_user(
+    request: Request,
+    session: AsyncSession = Depends(get_session)
+):
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
     try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            username: str = payload.get("sub")
-            if username is None:
-                raise credentials_exception
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
     except JWTError:
-        raise credentials_exception
+        raise HTTPException(status_code=401, detail="Invalid token")
+
     user = await user_crud.get_user_by_username(session, username)
-    if user is None:
-        raise credentials_exception
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
     return user
+
 
