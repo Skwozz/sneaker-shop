@@ -1,15 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <title>Корзина</title>
+  <meta charset="UTF-8">
+  <title>SneakerShop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>🛒 Ваша корзина</h1>
-  <ul>
-    {% for item in items %}
-      <li>{{ item.product.name }} — {{ item.product.price }} — {{ item.quantity }} ₽</li>
-    {% endfor %}
-  </ul>
-  <a href="/home">⬅️ Назад в каталог</a>
+  <!-- Шапка -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/home" class="logo">SneakerShop</a>
+      <nav class="nav">
+        <a href="/login">Login</a>
+        <a href="/cart/">🛒</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Каталог товаров -->
+  <main class="container">
+    <div class="product-grid">
+      {% for item in items %}
+      <div class="product-card">
+        <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
+        <div class="product-info">
+          <h3>{{ item.product.name }}</h3>
+          <p>{{ item.product.brand }} / Размер {{ item.product.size }}</p>
+          <p>{{ item.quantity }}</p>
+          <div class="price-cart">
+            <span class="price">{{ item.product.price }}$</span>
+           <form method="post" action="/delete-cart-item/">
+              <input type="hidden" name="item_id" value="{{ item.id }}">
+              <button type="submit">Удалить</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </main>
 </body>
 </html>
