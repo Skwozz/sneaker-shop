@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from app.routers.auth_router import oauth2_scheme
 from app.db.base import get_session
 from app.schemas import user
 from app.models.user import User
@@ -18,3 +18,9 @@ async def register_user(user: user.UserCreate, session: AsyncSession = Depends(g
 @router.get("/me")
 async def read_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+
+@router.get("/protected-route")
+async def protected(token: str = Depends(oauth2_scheme)):
+    return {"message": "You're authorized!"}

@@ -116,3 +116,50 @@ button {
 button:hover {
   background-color: #27ae60;
 }
+.quantity-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.quantity-controls input[type="number"] {
+  width: 50px;
+  text-align: center;
+  border: none;
+  background: #fff;
+  font-size: 16px;
+  pointer-events: none; /* запрещает ручной ввод */
+}
+
+.quantity-controls button {
+  width: 30px;
+  background: #eee;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.quantity-controls button:hover {
+  background-color: #ddd;
+}
+
+.update-btn {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.update-btn:hover {
+  background-color: #27ae60;
+}

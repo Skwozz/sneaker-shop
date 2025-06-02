@@ -5,6 +5,9 @@ from sqlalchemy.future import select
 from app.routers.auth_router import get_current_user
 from app.models import cart_item as model_cart_item
 from app.schemas import cart_item
+from app.schemas.cart_item import CartItemUpdate
+
+
 async def get_cart_item(session: AsyncSession, user_id: int):
     result = await session.execute(select(model_cart_item.CartItem)
                     .options(selectinload(model_cart_item.CartItem.product))
@@ -34,6 +37,26 @@ async def create_cart_item(session: AsyncSession, cart: cart_item.CartItemCreate
         await session.commit()
         await session.refresh(db_cart_item)
         return db_cart_item
+
+async def update_cart_item(
+        session: AsyncSession,
+        cart_item_id: int,
+        user_id: int,
+        cart_item_update: CartItemUpdate):
+    result = await session.execute(select(model_cart_item.CartItem).
+                        options(selectinload(model_cart_item.CartItem.product)).
+                        where(model_cart_item.CartItem.id == cart_item_id,
+                        model_cart_item.CartItem.user_id == user_id))
+    cart_item = result.scalars().first()
+    if not cart_item:
+        return None
+
+    cart_item.quantity = cart_item_update.quantity
+    await session.commit()
+    await session.refresh(cart_item)
+    return cart_item
+
+
 
 
 async def delete_cart_item(session: AsyncSession, cart_item_id: int, user_id: int):

@@ -8,9 +8,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.base import get_session
 from app.models.user import User
 from app.routers.auth_router import get_current_user
-from app.crud.cart_item_crud import create_cart_item, get_cart_item, delete_cart_item
+from app.crud.cart_item_crud import create_cart_item, get_cart_item, delete_cart_item, update_cart_item
+from app.routers.cart_item_router import cart_item_update
 from app.routers.login_router import get_current_user_browser
-from app.schemas.cart_item import CartItemCreate
+from app.schemas.cart_item import CartItemCreate, CartItemUpdate
 
 router = APIRouter()
 templates = Jinja2Templates(directory='templates')
@@ -55,4 +56,21 @@ async def delete_cart_item_front(
     return RedirectResponse(url='/cart', status_code=303)
 
 
+@router.post('/cart/update-quantity/')
+async def update_quantity_form(
+        item_id: int = Form(...),
+        quantity: int = Form(...),
+        session: AsyncSession = Depends(get_session),
+        current_user: User = Depends(get_current_user_browser)
+):
+
+    cart_item_update = CartItemUpdate(quantity=quantity)
+
+    await update_cart_item(
+        session=session,
+        cart_item_id=item_id,
+        user_id=current_user.id,
+        cart_item_update=cart_item_update
+    )
+    return RedirectResponse(url='/cart', status_code=303)
 

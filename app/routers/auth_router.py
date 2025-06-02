@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, Request, HTTPException, status
 import datetime
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -46,8 +46,6 @@ async def login_with_access_token(
                             headers={"WWW-Authenticate": "Bearer"},)
     access_token = crreate_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
-
-from fastapi import Request
 
 async def get_current_user(
     request: Request,
