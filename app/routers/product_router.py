@@ -21,8 +21,15 @@ async def create_product(
 async def get_products(
         session: AsyncSession = Depends(get_session)
 ):
-    return await product_crud.get_product(session,)
+    return await product_crud.get_product(session)
 
+@router.get('/get/{prodict_id}', response_model=ProductRead)
+async def get_products_by_id(
+        product_id: int,
+        session: AsyncSession = Depends(get_session),
+
+):
+    return await product_crud.get_product_by_id(session,product_id)
 @router.delete('/delete/{id}', status_code= status.HTTP_204_NO_CONTENT)
 async def delete_product(
         id: int,

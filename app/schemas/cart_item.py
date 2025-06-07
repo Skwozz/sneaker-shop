@@ -1,23 +1,24 @@
 from typing import Optional
 
 from pydantic import BaseModel
-from app.schemas.product import ProductRead
+from app.schemas.product import VariantRead
+
+
 class CartItem(BaseModel):
     product_id: int
     quantity: int
 
-class CartItemCreate(CartItem):
-    pass
+class CartItemCreate(BaseModel):
+    variant_id: int
+    quantity: int
+
 
 class CartItemUpdate(BaseModel):
     quantity: int
-    product_id: Optional[int] = None
 
-    model_config = {"from_attributes": True}
 
 class CartItemRead(BaseModel):
-    id: int
-    product: ProductRead
+    variant: VariantRead
     quantity: int
 
     model_config = {"from_attributes": True}

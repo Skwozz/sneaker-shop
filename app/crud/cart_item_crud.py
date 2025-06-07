@@ -3,48 +3,70 @@ from sqlalchemy.orm import Session , selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.routers.auth_router import get_current_user
-from app.models import cart_item as model_cart_item
+from app.models import cart_item as model_cart_item, product
 from app.schemas import cart_item
 from app.schemas.cart_item import CartItemUpdate
 
 
 async def get_cart_item(session: AsyncSession, user_id: int):
     result = await session.execute(select(model_cart_item.CartItem)
-                    .options(selectinload(model_cart_item.CartItem.product))
+                    .options(selectinload(model_cart_item.CartItem.variant))
                     .where(model_cart_item.CartItem.user_id == user_id))
     return result.scalars().all()
 
 
-async def create_cart_item(session: AsyncSession, cart: cart_item.CartItemCreate, user_id:int):
+async def create_cart_item(session: AsyncSession, cart: cart_item.CartItemCreate, user_id: int):
 
-    result = await session.execute(select(model_cart_item.CartItem)
-                                   .where(model_cart_item.CartItem.user_id == user_id,
-                                        model_cart_item.CartItem.product_id == cart.product_id))
-    existinc_item = result.scalars().one_or_none()
+    result = await session.execute(
+        select(product.Variant).where(product.Variant.id == cart.variant_id)
+    )
+    variant = result.scalar_one_or_none()
 
-    if existinc_item:
-        existinc_item.quantity += cart.quantity
-        await session.commit()
-        await session.refresh(existinc_item)
-        return existinc_item
-    else:
-        db_cart_item = model_cart_item.CartItem(
-            product_id= cart.product_id,
-            quantity = cart.quantity,
-            user_id=user_id,
+    if not variant:
+        raise HTTPException(status_code=404, detail="Вариант товара не найден")
+
+    result = await session.execute(
+        select(model_cart_item.CartItem).where(
+            model_cart_item.CartItem.user_id == user_id,
+            model_cart_item.CartItem.variant_id == cart.variant_id
         )
-        session.add(db_cart_item)
-        await session.commit()
-        await session.refresh(db_cart_item)
-        return db_cart_item
+    )
+    existing_item = result.scalar_one_or_none()
 
+    if existing_item:
+        new_quantity = existing_item.quantity + cart.quantity
+        if new_quantity > variant.quantity:
+            raise HTTPException(
+                status_code=400,
+                detail=f"На складе только {variant.quantity} шт"
+            )
+        existing_item.quantity = new_quantity
+        await session.commit()
+        await session.refresh(existing_item)
+        return existing_item
+
+    if cart.quantity > variant.quantity:
+        raise HTTPException(
+            status_code=400,
+            detail=f"На складе только {variant.quantity} шт"
+        )
+
+    db_cart_item = model_cart_item.CartItem(
+        variant_id=cart.variant_id,
+        quantity=cart.quantity,
+        user_id=user_id,
+    )
+    session.add(db_cart_item)
+    await session.commit()
+    await session.refresh(db_cart_item)
+    return db_cart_item
 async def update_cart_item(
         session: AsyncSession,
         cart_item_id: int,
         user_id: int,
         cart_item_update: CartItemUpdate):
     result = await session.execute(select(model_cart_item.CartItem).
-                        options(selectinload(model_cart_item.CartItem.product)).
+                        options(selectinload(model_cart_item.CartItem.variant)).
                         where(model_cart_item.CartItem.id == cart_item_id,
                         model_cart_item.CartItem.user_id == user_id))
     cart_item = result.scalars().first()

@@ -9,6 +9,7 @@ class CartItem(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id'), index=True)
-    product_id = Column(Integer, ForeignKey('products.id'), index=True)
+    variant_id = Column(Integer, ForeignKey('variant.id'), index=True)
     quantity = Column(Integer, default=1, nullable=False)
-    product = relationship("Product")
+
+    variant = relationship("Variant")

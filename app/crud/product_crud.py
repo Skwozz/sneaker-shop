@@ -1,27 +1,45 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from app.models.product import Product
-from app.schemas.product import ProductCreate
+from app.models.product import Product, Variant
+from app.schemas.product import ProductCreate,ProductRead
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 async def get_product(session: AsyncSession):
-    result = await session.execute(select(Product))
+    result = await session.execute(select(Product).options(selectinload(Product.variants)))
     return result.scalars().all()
 
-async def create_product(session: AsyncSession,
-                          product: ProductCreate):
+async def create_product(session: AsyncSession, product: ProductCreate):
     db_product = Product(
-        name = product.name,
-        brand = product.brand,
-        price = product.price,
-        image_url = product.image_url,
-        size = product.size,
+        name=product.name,
+        brand=product.brand,
+        style=product.style,
+        description=product.description,
     )
+
+    for var in product.variants:
+        db_variant = Variant(**var.dict())
+        db_product.variants.append(db_variant)
+
     session.add(db_product)
     await session.commit()
     await session.refresh(db_product)
-    return db_product
+    result = await session.execute(
+        select(Product).options(selectinload(Product.variants)).where(Product.id == db_product.id)
+    )
+    product_with_variants = result.scalar_one()
 
+    return product_with_variants
+
+
+async  def get_product_by_id(
+        session:AsyncSession,
+        product_id: int,
+):
+    result = await session.execute(select(Product)
+                                    .options(selectinload(Product.variants))
+                                    .where(Product.id==product_id))
+    return result.scalars().one_or_none()
 async def delete_product(session: AsyncSession, product_id: int):
     result = await session.execute(select(Product).where(Product.id==product_id))
     product = result.scalars().first()

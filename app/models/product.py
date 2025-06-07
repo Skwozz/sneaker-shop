@@ -1,4 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float
+from sqlalchemy.orm import relationship
+
 from app.db.base import Base
 
 class Product(Base):
@@ -7,6 +9,22 @@ class Product(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     brand = Column(String, nullable=False)
+    style = Column(String)
+    description = Column(String)
+
+    variants = relationship('Variant', back_populates='product', cascade='all, delete-orphan')  # ✅
+
+
+class Variant(Base):
+    __tablename__ = 'variant'
+
+    id = Column(Integer, primary_key= True)
+    product_id = Column(Integer,ForeignKey('products.id', ondelete='CASCADE'))
+    size = Column(Float, nullable=False)
     price = Column(Float, nullable=False)
+    quantity = Column(Integer,nullable=False)
     image_url = Column(String, nullable=False)
-    size = Column(String, nullable=False)
+
+    product = relationship('Product', back_populates='variants')
+
+
