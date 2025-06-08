@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -11,5 +11,5 @@ class CartItem(Base):
     user_id = Column(Integer, ForeignKey('users.id'), index=True)
     variant_id = Column(Integer, ForeignKey('variant.id'), index=True)
     quantity = Column(Integer, default=1, nullable=False)
-
+    size = Column(Float, nullable=False)
     variant = relationship("Variant")

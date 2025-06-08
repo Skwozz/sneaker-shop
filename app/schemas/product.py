@@ -3,16 +3,26 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
+class SizeInfo(BaseModel):
+    size: float
+    quantity: int
 
+class SizeInfoRead(BaseModel):
+    id: int
+    size: float
+    quantity: int
+    model_config = {"from_attributes": True}
 class VariantBase(BaseModel):
 
     price: float
     image_url: str
-    size: float
-    quantity: int
+    sizes: List[SizeInfo]
 
 class VariantCreate(VariantBase):
-    pass
+    price: float
+    image_url: str
+    sizes: List[SizeInfo]
+    model_config = {"from_attributes": True}
 
 class VariantRead(VariantBase):
 
@@ -29,6 +39,7 @@ class ProductBase(BaseModel):
 
 class ProductCreate(ProductBase):
     variants: List[VariantCreate]
+    model_config = {"from_attributes": True}
 
 class ProductRead(ProductBase):
 

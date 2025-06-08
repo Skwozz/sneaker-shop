@@ -19,34 +19,46 @@
   </header>
 
   <!-- Каталог товаров -->
-  <main class="container">
-    <div class="product-grid">
-      {% for item in items %}
-      <div class="product-card">
-        <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
-        <div class="product-info">
-          <h3>{{ item.product.name }}</h3>
-          <p>{{ item.product.brand }} / Размер {{ item.product.size }}</p>
-          <p>{{ item.quantity }}</p>
-          <div class="price-cart">
-            <span class="price">{{ item.product.price }}$</span>
+ <main class="container">
+  <div class="product-grid">
+    {% for item in items %}
+    {% set size_info = item.variant.sizes | selectattr('size', 'equalto', item.size) | list | first %}
+    <div class="product-card">
+      <img src="{{ item.variant.image_url }}" alt="{{ item.variant.product.name }}">
 
-            <form method="post" action="/cart/update-quantity/">
-        <input type="hidden" name="item_id" value="{{ item.id }}">
-        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" style="width: 60px;">
-        <button type="submit">Обновить</button>
+      <div class="product-info">
+        <h3>{{ item.variant.product.name }}</h3>
+        <p>{{ item.variant.product.brand }} / Размер {{ item.size }}</p>
+
+        {% if size_info %}
+          <p>Остаток: {{ size_info.quantity }}</p>
+        {% else %}
+          <p style="color: red;">Размер не найден</p>
+        {% endif %}
+
+        <div class="price-cart">
+          <span class="price">{{ item.variant.price }}$</span>
+
+          <form method="post" action="/cart/update-quantity/">
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+            <input type="number" name="quantity"
+                   value="{{ item.quantity }}"
+                   min="1"
+                   max="{{ size_info.quantity if size_info else 1 }}"
+                   style="width: 60px;">
+            <button type="submit">Обновить</button>
           </form>
 
-           <form method="post" action="/delete-cart-item/">
-              <input type="hidden" name="item_id" value="{{ item.id }}">
-              <button type="submit">Удалить</button>
-            </form>
-
-          </div>
+          <form method="post" action="/delete-cart-item/">
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+            <button type="submit">Удалить</button>
+          </form>
         </div>
       </div>
-      {% endfor %}
     </div>
-  </main>
+    {% endfor %}
+  </div>
+</main>
+
 </body>
 </html>

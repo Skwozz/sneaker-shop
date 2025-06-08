@@ -5,6 +5,8 @@ from starlette.responses import RedirectResponse
 from datetime import datetime, timedelta
 from app.crud import product_crud
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.crud.product_crud import get_product_by_id
 from app.db.base import get_session
 from app.models.user import User
 from app.routers.auth_router import get_current_user
@@ -27,13 +29,14 @@ async def home(request: Request,
 
 @router.post('/add-to-cart/')
 async def add_to_cart(
-        product_id: int = Form(...),
+        variant_id: int = Form(...),
+        size: float = Form(...),
         session: AsyncSession = Depends(get_session),
         current_user: User = Depends(get_current_user_browser)
 ):
-    cart_data = CartItemCreate(product_id=product_id, quantity=1)
+    cart_data = CartItemCreate(variant_id=variant_id, size=size, quantity=1)
     await create_cart_item(session, cart_data, current_user.id)
-    return  RedirectResponse(url='/home',status_code=303)
+    return  RedirectResponse(url='/cart',status_code=303)
 
 
 @router.get('/cart/', response_class=HTMLResponse)
@@ -45,6 +48,16 @@ async def cart_page(request: Request,
     return templates.TemplateResponse('cart.html',
                                     {'request':request,
                                      'items': cart_item})
+
+@router.get('/product/{product_id}', response_class=HTMLResponse)
+async def product_page(product_id: int,
+                    request: Request,
+                    session: AsyncSession = Depends(get_session),
+                    ):
+    product = await get_product_by_id(session, product_id)
+    return templates.TemplateResponse('product.html',
+                                    {'request':request,
+                                     'product': product})
 
 @router.post('/delete-cart-item/')
 async def delete_cart_item_front(
