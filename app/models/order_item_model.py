@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -8,9 +8,10 @@ class OrderItem(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     order_id = Column(Integer, ForeignKey('orders.id'))
-    product_id = Column(Integer, ForeignKey('products.id'))
+    variant_id = Column(Integer, ForeignKey('variant.id'))
+    size = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False)
     price = Column(Integer, nullable=False)
 
     order = relationship("Order", back_populates="order_items")
-    product = relationship('Product')
+    variant = relationship('Variant')

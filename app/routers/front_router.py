@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from app.crud import product_crud
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.crud.order_crud import create_order_from_cart, get_order
 from app.crud.product_crud import get_product_by_id
 from app.db.base import get_session
 from app.models.user import User
@@ -87,3 +88,22 @@ async def update_quantity_form(
     )
     return RedirectResponse(url='/cart', status_code=303)
 
+@router.post("/orders/create/")
+async def create_order(
+
+    session: AsyncSession = Depends(get_session),
+    current_user=Depends(get_current_user),
+):
+    await create_order_from_cart(session, current_user.id)
+    return RedirectResponse(url="/orders", status_code=302)
+
+
+
+@router.get("/orders/")
+async def get_orders(
+    request: Request,
+    session: AsyncSession = Depends(get_session),
+    current_user=Depends(get_current_user),
+):
+    orders = await get_order(session, current_user.id)
+    return templates.TemplateResponse("orders.html", {"request": request, "orders": orders})

@@ -58,15 +58,15 @@ a {
 /* Каталог */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
   margin-top: 30px;
 }
 
 .product-card {
   background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -79,23 +79,33 @@ a {
 
 .product-card img {
   width: 100%;
-  height: 220px;
+  height: 200px;
   object-fit: contain;
-  background-color: #f9f9f9;
+  background-color: #fafafa;
+  padding: 1px;
 }
 
-
+/* Информация о товаре */
 .product-info {
-  padding: 15px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  flex-grow: 1;
 }
 
 .product-info h3 {
   margin: 0;
   font-size: 18px;
   color: #333;
+  padding: 3px;
+}
+
+.product-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+  padding: 3px;
 }
 
 .price {
@@ -104,6 +114,7 @@ a {
   color: #27ae60;
 }
 
+/* Кнопки */
 button {
   background-color: black;
   border: none;
@@ -118,6 +129,7 @@ button {
 button:hover {
   background-color: #27ae60;
 }
+
 .quantity-form {
   display: flex;
   align-items: center;
@@ -138,7 +150,7 @@ button:hover {
   border: none;
   background: #fff;
   font-size: 16px;
-  pointer-events: none; /* запрещает ручной ввод */
+  pointer-events: none;
 }
 
 .quantity-controls button {
@@ -164,4 +176,11 @@ button:hover {
 
 .update-btn:hover {
   background-color: #27ae60;
+}
+.order-block {
+  margin-bottom: 40px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Мои заказы — SneakerShop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="container header-inner">
+    <a href="/home" class="logo">SneakerShop</a>
+    <nav class="nav">
+      <a href="/cart/">🛒 Корзина</a>
+      <a href="/logout">Выйти</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <h2>Мои заказы</h2>
+
+  {% if orders %}
+    {% for order in orders %}
+      <div class="order-block">
+        <h3>Заказ #{{ order.id }} — {{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</h3>
+        <div class="product-grid">
+          {% for item in order.order_items %}
+            <div class="product-card">
+              <img src="{{ item.variant.image_url }}" alt="Товар">
+              <div class="product-info">
+                <h3>{{ item.variant.product.name }}</h3>
+                <p>Размер: {{ item.size }}</p>
+                <p>Цена: {{ item.price }}$</p>
+                <p>Кол-во: {{ item.quantity }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <hr>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Вы ещё не оформляли заказы.</p>
+  {% endif %}
+</main>
+
+</body>
+</html>

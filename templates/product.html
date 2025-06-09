@@ -33,7 +33,7 @@
           {% for v in product.variants %}
           <li class="product-card">
             <div class="product-info">
-                <img src="{{ v.image_url }}" style="width: 300px; height: 240px; object-fit: contain;" alt="{{ product.name }}">
+                <img src="{{ v.image_url }}" style="width: 350px; height: 280px; object-fit: contain;" alt="{{ product.name }}">
               <p>Цена: <strong>{{ v.price }}$</strong></p>
 
               <form method="post" action="/add-to-cart/">

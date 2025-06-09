@@ -12,8 +12,9 @@
     <div class="container header-inner">
       <a href="/home" class="logo">SneakerShop</a>
       <nav class="nav">
-        <a href="/login">Login</a>
+        <a href="/login">Войти</a>
         <a href="/cart/">🛒</a>
+        <a href="/orders/">Заказы</a>
       </nav>
     </div>
   </header>
@@ -25,11 +26,14 @@
       <div class="product-card">
         <a href="/product/{{ product.id }}">
         <img src="{{ product.variants[0].image_url }}" alt="{{ product.name }}">
-        <div class="product-info">
+
+
+          <div class="product-info">
           <h3>{{ product.name }}</h3>
           <p>{{ product.brand }}</p>
           <p>{{ product.description }}</p>
         </div>
+          </a>
       </div>
       {% endfor %}
     </div>
