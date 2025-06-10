@@ -12,6 +12,12 @@ class SizeInfoRead(BaseModel):
     size: float
     quantity: int
     model_config = {"from_attributes": True}
+
+
+class VariantUpdate(BaseModel):
+    price: float
+    image_url: str
+    sizes: List[SizeInfo]
 class VariantBase(BaseModel):
 
     price: float
@@ -46,3 +52,9 @@ class ProductRead(ProductBase):
     id: int
     variants: List[VariantRead]
     model_config = {"from_attributes": True}
+
+class ProductUpdate(BaseModel):
+    name: str
+    brand: str
+    style: Optional[str] = None
+    description: Optional[str] = None

@@ -22,5 +22,6 @@ class CartItemRead(BaseModel):
     variant: VariantRead
     quantity: int
     size: float
+    computed_price: float
 
     model_config = {"from_attributes": True}

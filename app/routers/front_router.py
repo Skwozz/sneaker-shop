@@ -88,14 +88,14 @@ async def update_quantity_form(
     )
     return RedirectResponse(url='/cart', status_code=303)
 
-@router.post("/orders/create/")
+@router.post("/orders/create/", response_class=HTMLResponse)
 async def create_order(
 
     session: AsyncSession = Depends(get_session),
     current_user=Depends(get_current_user),
 ):
     await create_order_from_cart(session, current_user.id)
-    return RedirectResponse(url="/orders", status_code=302)
+    return RedirectResponse(url="/orders", status_code=303)
 
 
 

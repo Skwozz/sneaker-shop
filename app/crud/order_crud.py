@@ -18,10 +18,10 @@ async def get_order(session: AsyncSession, user_id: int):
         .options(
             selectinload(Order.order_items)
             .selectinload(OrderItem.variant)
-            .selectinload(Variant.product),  # ← обязательно!
+            .selectinload(Variant.product),
             selectinload(Order.order_items)
             .selectinload(OrderItem.variant)
-            .selectinload(Variant.sizes)  # ← если используешь sizes
+            .selectinload(Variant.sizes)
         )
         .where(Order.user_id == user_id)
     )

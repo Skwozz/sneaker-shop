@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
 
+from app.crud.product_crud import update_product
 from app.db.base import get_session
-from app.schemas.product import ProductCreate, ProductRead
+from app.schemas.product import ProductCreate, ProductRead, ProductUpdate, VariantUpdate
 from app.crud import product_crud
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -39,3 +40,29 @@ async def delete_product(
     if not delete_result:
         raise HTTPException(status_code=404, detail="Product not found")
     return  delete_result
+
+@router.put('/product/{product_id}',response_model= ProductUpdate)
+async def cart_item_update(
+        product_id: int,
+        product_update: ProductUpdate,
+        session: AsyncSession = Depends(get_session)
+):
+    product = await product_crud.update_product(
+        session,
+        product_id= product_id,
+        product=product_update)
+
+    return product
+
+@router.put('/variant/{variant_id}',response_model= VariantUpdate)
+async def variant_update(
+        variant_id: int,
+        variant: VariantUpdate,
+        session: AsyncSession = Depends(get_session)
+):
+    variant_up = await product_crud.update_variant_with_sizes(
+        session,
+        variant_id= variant_id,
+        variant_data=variant)
+
+    return variant_up

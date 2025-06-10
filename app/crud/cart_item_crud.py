@@ -60,12 +60,15 @@ async def create_cart_item(session: AsyncSession, cart: cart_item.CartItemCreate
 
     if existing_item:
         new_quantity = existing_item.quantity + cart.quantity
+
+
         if new_quantity > matched_size.quantity:
             raise HTTPException(
                 status_code=400,
                 detail=f"На складе только {matched_size.quantity} шт"
             )
         existing_item.quantity = new_quantity
+
         await session.commit()
         await session.refresh(existing_item)
         return existing_item
