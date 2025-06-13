@@ -10,7 +10,7 @@ from app.schemas import cart_item
 from app.schemas.cart_item import CartItemUpdate
 
 
-async def get_cart_item(session: AsyncSession, user_id: int):
+async def get_cart_item_with_total_price(session: AsyncSession, user_id: int):
     result = await session.execute(
         select(model_cart_item.CartItem)
         .options(
@@ -21,7 +21,10 @@ async def get_cart_item(session: AsyncSession, user_id: int):
         )
         .where(model_cart_item.CartItem.user_id == user_id)
     )
-    return result.scalars().all()
+
+    cart = result.scalars().all()
+    total = round(sum(item.quantity * item.variant.price for item in cart),2)
+    return cart, total
 
 
 
@@ -121,3 +124,6 @@ async def delete_cart_item(session: AsyncSession, cart_item_id: int, user_id: in
         await session.delete(cart_item)
         await session.commit()
         return True
+
+
+

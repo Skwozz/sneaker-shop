@@ -18,52 +18,60 @@
     </div>
   </header>
 
-  <!-- Каталог товаров -->
- <main class="container">
-  <div class="product-grid">
-    {% for item in items %}
-    {% set size_info = item.variant.sizes | selectattr('size', 'equalto', item.size) | list | first %}
-    <div class="product-card">
-      <img src="{{ item.variant.image_url }}" alt="{{ item.variant.product.name }}">
+ <main class="container cart-layout">
 
-      <div class="product-info">
-        <h3>{{ item.variant.product.name }}</h3>
-        <p>{{ item.variant.product.brand }} / Размер {{ item.size }}</p>
+  <!-- Левая часть: товары -->
+  <div class="cart-items">
+    <div class="product-grid">
+      {% for item in items %}
+      {% set size_info = item.variant.sizes | selectattr('size', 'equalto', item.size) | list | first %}
+      <div class="product-card">
+        <img src="{{ item.variant.image_url }}" alt="{{ item.variant.product.name }}">
 
-        {% if size_info %}
-          <p>Остаток: {{ size_info.quantity }}</p>
-        {% else %}
-          <p style="color: red;">Размер не найден</p>
-        {% endif %}
+        <div class="product-info">
+          <h3>{{ item.variant.product.name }}</h3>
+          <p>{{ item.variant.product.brand }} / Размер {{ item.size }}</p>
 
-        <div class="price-cart">
-          <span class="price">{{ item.variant.price }}$</span>
+          {% if size_info %}
+            <p>Остаток: {{ size_info.quantity }}</p>
+          {% else %}
+            <p style="color: red;">Размер не найден</p>
+          {% endif %}
 
-          <form method="post" action="/cart/update-quantity/">
-            <input type="hidden" name="item_id" value="{{ item.id }}">
-            <input type="number" name="quantity"
-                   value="{{ item.quantity }}"
-                   min="1"
-                   max="{{ size_info.quantity if size_info else 1 }}"
-                   style="width: 60px;">
-            <button type="submit">Обновить</button>
-          </form>
+          <div class="price-cart">
+            <span class="price">{{ item.variant.price }}$</span>
 
-          <form method="post" action="/delete-cart-item/">
-            <input type="hidden" name="item_id" value="{{ item.id }}">
-            <button type="submit">Удалить</button>
-          </form>
+            <form method="post" action="/cart/update-quantity/">
+              <input type="hidden" name="item_id" value="{{ item.id }}">
+              <input type="number" name="quantity"
+                     value="{{ item.quantity }}"
+                     min="1"
+                     max="{{ size_info.quantity if size_info else 1 }}"
+                     style="width: 60px;">
+              <button type="submit">Обновить</button>
+            </form>
 
-
+            <form method="post" action="/delete-cart-item/">
+              <input type="hidden" name="item_id" value="{{ item.id }}">
+              <button type="submit">Удалить</button>
+            </form>
+          </div>
         </div>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
-              <form method="post" action="/orders/create/">
-          <button type="submit" class="checkout-btn">Оформить заказ</button>
-        </form>
   </div>
-</main>
 
-</body>
-</html>
+  <!-- Правая часть: оформление заказа -->
+  <div class="cart-summary">
+    <div class="total-box">
+      <h3>💰 Общая сумма корзины: {{ total }} $</h3>
+    </div>
+    {% if total > 0 %}
+    <form method="post" action="/orders/create/">
+      <button type="submit" class="checkout-btn">Оформить заказ</button>
+    </form>
+    {% endif %}
+  </div>
+
+</main>

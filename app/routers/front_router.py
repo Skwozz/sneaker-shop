@@ -11,7 +11,7 @@ from app.crud.product_crud import get_product_by_id
 from app.db.base import get_session
 from app.models.user import User
 from app.routers.auth_router import get_current_user
-from app.crud.cart_item_crud import create_cart_item, get_cart_item, delete_cart_item, update_cart_item
+from app.crud.cart_item_crud import create_cart_item, get_cart_item_with_total_price, delete_cart_item, update_cart_item
 from app.routers.cart_item_router import cart_item_update
 from app.routers.login_router import get_current_user_browser
 from app.schemas.cart_item import CartItemCreate, CartItemUpdate
@@ -45,10 +45,11 @@ async def cart_page(request: Request,
                     session: AsyncSession = Depends(get_session),
                     current_user: User = Depends(get_current_user_browser)
                     ):
-    cart_item = await get_cart_item(session, current_user.id)
+    cart_item, total = await get_cart_item_with_total_price(session, current_user.id)
     return templates.TemplateResponse('cart.html',
                                     {'request':request,
-                                     'items': cart_item})
+                                     'items': cart_item,
+                                     'total': total})
 
 @router.get('/product/{product_id}', response_class=HTMLResponse)
 async def product_page(product_id: int,
