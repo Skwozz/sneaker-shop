@@ -12,9 +12,15 @@
     <div class="container header-inner">
       <a href="/home" class="logo">SneakerShop</a>
       <nav class="nav">
-        <a href="/login">Войти</a>
+
+        {% if current_user %}
         <a href="/cart/">🛒</a>
         <a href="/orders/">Заказы</a>
+        <a href="/logout">Выйти</a>
+        {% else %}
+        <a href="/login">Войти</a>
+        {% endif %}
+
       </nav>
     </div>
   </header>

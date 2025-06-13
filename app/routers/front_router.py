@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Request, Depends, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -13,7 +15,7 @@ from app.models.user import User
 from app.routers.auth_router import get_current_user
 from app.crud.cart_item_crud import create_cart_item, get_cart_item_with_total_price, delete_cart_item, update_cart_item
 from app.routers.cart_item_router import cart_item_update
-from app.routers.login_router import get_current_user_browser
+from app.routers.login_router import get_current_user_browser, get_current_user_optional
 from app.schemas.cart_item import CartItemCreate, CartItemUpdate
 
 router = APIRouter()
@@ -21,11 +23,14 @@ templates = Jinja2Templates(directory='templates')
 
 @router.get('/home', response_class=HTMLResponse)
 async def home(request: Request,
-               session: AsyncSession = Depends(get_session)):
+               session: AsyncSession = Depends(get_session),
+               current_user: Optional[User] = Depends(get_current_user_optional)
+):
     products = await product_crud.get_product(session)
     return templates.TemplateResponse('index.html',
                                       {'request': request,
-                                        'products':products
+                                        'products':products,
+                                       'current_user':current_user
                                                      })
 
 @router.post('/add-to-cart/')
@@ -35,6 +40,8 @@ async def add_to_cart(
         session: AsyncSession = Depends(get_session),
         current_user: User = Depends(get_current_user_browser)
 ):
+    if current_user is None:
+        return RedirectResponse(url="/login", status_code=303)
     cart_data = CartItemCreate(variant_id=variant_id, size=size, quantity=1)
     await create_cart_item(session, cart_data, current_user.id)
     return  RedirectResponse(url='/cart',status_code=303)
@@ -45,6 +52,8 @@ async def cart_page(request: Request,
                     session: AsyncSession = Depends(get_session),
                     current_user: User = Depends(get_current_user_browser)
                     ):
+    if current_user is None:
+        return RedirectResponse(url="/login", status_code=303)
     cart_item, total = await get_cart_item_with_total_price(session, current_user.id)
     return templates.TemplateResponse('cart.html',
                                     {'request':request,
@@ -55,11 +64,14 @@ async def cart_page(request: Request,
 async def product_page(product_id: int,
                     request: Request,
                     session: AsyncSession = Depends(get_session),
+                    current_user: Optional[User] = Depends(get_current_user_optional)
                     ):
+
     product = await get_product_by_id(session, product_id)
     return templates.TemplateResponse('product.html',
                                     {'request':request,
-                                     'product': product})
+                                     'product': product,
+                                     'current_user':current_user})
 
 @router.post('/delete-cart-item/')
 async def delete_cart_item_front(
@@ -67,6 +79,8 @@ async def delete_cart_item_front(
         session: AsyncSession = Depends(get_session),
         current_user: User = Depends(get_current_user_browser)
 ):
+    if current_user is None:
+        return RedirectResponse(url="/login", status_code=303)
     await delete_cart_item(session, item_id, current_user.id)
     return RedirectResponse(url='/cart', status_code=303)
 
@@ -78,6 +92,8 @@ async def update_quantity_form(
         session: AsyncSession = Depends(get_session),
         current_user: User = Depends(get_current_user_browser)
 ):
+    if current_user is None:
+        return RedirectResponse(url="/login", status_code=303)
 
     cart_item_update = CartItemUpdate(quantity=quantity)
 
@@ -95,6 +111,8 @@ async def create_order(
     session: AsyncSession = Depends(get_session),
     current_user=Depends(get_current_user),
 ):
+    if current_user is None:
+        return RedirectResponse(url="/login", status_code=303)
     await create_order_from_cart(session, current_user.id)
     return RedirectResponse(url="/orders", status_code=303)
 
@@ -104,7 +122,9 @@ async def create_order(
 async def get_orders(
     request: Request,
     session: AsyncSession = Depends(get_session),
-    current_user=Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_current_user_optional),
 ):
+    if current_user is None:
+        return RedirectResponse(url="/login", status_code=303)
     orders = await get_order(session, current_user.id)
-    return templates.TemplateResponse("orders.html", {"request": request, "orders": orders})
+    return templates.TemplateResponse("orders.html", {"request": request, "orders": orders,"current_user": current_user})

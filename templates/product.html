@@ -12,8 +12,15 @@
     <div class="container header-inner">
       <a href="/home" class="logo">SneakerShop</a>
       <nav class="nav">
-        <a href="/login">Login</a>
+
+        {% if current_user %}
         <a href="/cart/">🛒</a>
+        <a href="/orders/">Заказы</a>
+        <a href="/logout">Выйти</a>
+        {% else %}
+        <a href="/login">Войти</a>
+        {% endif %}
+
       </nav>
     </div>
   </header>
@@ -31,24 +38,32 @@
         <h3>Доступные варианты:</h3>
         <ul class="product-grid">
           {% for v in product.variants %}
+          {% set available_sizes = v.sizes | selectattr("quantity", "gt", 0) | list %}
           <li class="product-card">
             <div class="product-info">
                 <img src="{{ v.image_url }}" style="width: 350px; height: 280px; object-fit: contain;" alt="{{ product.name }}">
               <p>Цена: <strong>{{ v.price }}$</strong></p>
-
+          {% if available_sizes|length > 0 %}
               <form method="post" action="/add-to-cart/">
                 <input type="hidden" name="variant_id" value="{{ v.id }}">
 
               <label for="size">Размер:</label>
               <select name="size" id="size" required>
                 {% for s in v.sizes %}
+                  {% if s.quantity > 0 %}
                   <option value="{{ s.size }}">{{ s.size }} (в наличии: {{ s.quantity }})</option>
+                   {% endif %}
                 {% endfor %}
               </select>
 
-
+                {% if current_user %}
                 <button type="submit">Добавить в корзину</button>
+
+                {% endif %}
               </form>
+              {% else %}
+              <p style="color: red;">Нет доступных размеров</p>
+          {% endif %}
             </div>
           </li>
           {% endfor %}
